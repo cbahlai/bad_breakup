@@ -17,10 +17,32 @@ test<-read.csv(file="test.csv", header=TRUE)
 
 standardize<-function(data){
   #operate on the second column in data, where our response variable is
-  data$response<-(data[,2]-mean(data[,2]))/sd(data[,2])
-    return(data)
+  data$stand.response<-(data[,2]-mean(data[,2]))/sd(data[,2])
+  #name the columns consistently so we don't get headaches later
+  names(data)<-c("year", "response", "stand.response")
+  #spit back our new data frame
+  return(data)
 }
 
+#try it on test data
 test1<-standardize(test)
 #seems to be functioning
+
+# next we need a function that runs a simple linear model of x=year, y=response variable
+
+linefit<-function (data){
+  #fit the model
+  model<-lm(stand.response~year, data=data)
+  #create a vector of relevant outputs. We want slope, error, P value
+  output<-c(summary(model)$coefficients[2,1], # slope
+            summary(model)$coefficients[2,2], # se for slope
+            summary(model)$coefficients[2,4]) #p value
+  return(output)
+}
+
+#and try this on test data
+linefit(test1)
+# functional!
+
+
 
