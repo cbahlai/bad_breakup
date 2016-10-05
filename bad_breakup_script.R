@@ -69,4 +69,25 @@ breakup<-function(data, window){ #window is the size of the window we want to us
   return(output)#output the data frame
 }
 
+#and now try this on the test data
 breakup(test1, 3)
+
+# now time to write the function that will iterate through our targetted windows
+# let's make a decision rule that our test data set must be greater than 10y in length
+# we can chose windows of 3, 4, 5, 6, 10, and actual study length
+# let's make this idiot-proof and build the standardize function right into this function
+# so we can literally run each properly prepared raw data set with a single line
+
+multiple_breakups<-function(data){
+  data1<-standardize(data) #standardize data
+  out3<-breakup(data1, 3) #fit at each window length
+  out4<-breakup(data1, 4)
+  out5<-breakup(data1, 5)
+  out6<-breakup(data1, 6)
+  out10<-breakup(data1, 10)
+  outall<-linefit(data1) #fit a line to the complete data set too
+  out<-rbind(out3, out4, out5, out6, out10, outall)
+  return(out)
+}
+
+multiple_breakups(test)
