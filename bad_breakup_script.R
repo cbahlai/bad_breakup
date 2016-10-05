@@ -69,7 +69,13 @@ breakup<-function(data, window){ #window is the size of the window we want to us
   while (numyears>(window-1)){ #while there's still more years of data than in the window
     chunk<-subset(remaining, year<(min(year)+window)) #pull out a chunk as big as the window from the top of the data
     out<-linefit(chunk) #fit a linear model and get relevant statistics on chunk
-    output<-rbind(output, out) #append the stats to the output data frame
+    #add a conditional so that if there's missing data, it's not included in output
+    if (window==length(unique(chunk$year))){
+      output<-rbind(output, out) #append the stats to the output data frame
+    }else{
+      output<-output #leave it out if it has missing data
+    }
+    
     remaining<-subset(remaining, year>min(year)) #cut out the first year of the remaining data + repeat
     numyears<-length(unique(remaining$year))
   }
@@ -173,4 +179,7 @@ lampyrid_notill$TREAT_DESC<-NULL
 
 #here goes nothing
 multiple_breakups(lampyrid_alfalfa)
+# there are some perculiarities because 2007 is missing, but I think we're working now.
+# try it with other data too
+multiple_breakups(lampyrid_notill)
 
