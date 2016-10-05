@@ -39,7 +39,8 @@ linefit<-function (data){
   model<-lm(stand.response~year, data=data)
   #create a vector of relevant outputs. We want slope, error, P value
   output<-c(min(data$year), #year the analysis started on
-            nrow(data), #number of years the analysis includes
+            nrow(data), #number of data points the analysis includes
+            length(unique(data$year)), #number of years the analysis includes
             summary(model)$coefficients[2,1], # slope
             summary(model)$coefficients[2,2], # se for slope
             summary(model)$coefficients[2,4]) #p value
@@ -60,16 +61,20 @@ breakup<-function(data, window){ #window is the size of the window we want to us
   remaining<-data #create dummy data set to operate on
   output<-data.frame(year=integer(0), #create empty data frame to put our output variables in
                      length=integer(0), 
+                     years=integer(0),
                      slope=numeric(0), 
                      slope_se=numeric(0), 
                      p_value=numeric(0))
-  while (nrow(remaining)>(window-1)){ #while there's still more rows of data than in the window
-    chunk<-remaining[1:window,] #pull out a chunk as big as the window from the top of the data
+  numyears<-max(data$year)-min(data$year)+1 #create a variable to count the number of years 
+                                            #represented in the datase
+  while (numyears>(window-1)){ #while there's still more years of data than in the window
+    chunk<-subset(remaining, year<(min(year)+window)) #pull out a chunk as big as the window from the top of the data
     out<-linefit(chunk) #fit a linear model and get relevant statistics on chunk
     output<-rbind(output, out) #append the stats to the output data frame
-    remaining<-remaining[-c(1),] #cut out the first line of the remaining data + repeat
+    remaining<-subset(remaining, year>min(year)) #cut out the first year of the remaining data + repeat
+    numyears<-numyears-1
   }
-  names(output)<-c("year", "length", "slope", "slope_se", "p_value")
+  names(output)<-c("year", "length", "years", "slope", "slope_se", "p_value")
   return(output)#output the data frame
 }
 
