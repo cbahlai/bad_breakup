@@ -13,7 +13,8 @@ test<-read.csv(file="test.csv", header=TRUE)
 
 # data needs to be normalized in some way because we will be operating across domains 
 # and likely with dramatically different values. Let's use a standardization approach so
-# we don't give undue influence to outliers- something like x(standard)=(x-mean)/Stdev
+# we don't give undue influence to outliers but also gets responses in the same magnitude
+# something like x(standard)=(x-mean)/Stdev
 
 standardize<-function(data){
   #operate on the second column in data, where our response variable is
@@ -50,7 +51,7 @@ linefit(test1)
 #function that starts at the first year, counts the number of rows specified
 #and then feeds that rsultant data frame to the fittling function. 
 #then we want to discard the first row of the data set, and repeat until fewer than
-#the number of rows specified remain
+#the number of rows specified remains
 
 breakup<-function(data, window){ #window is the size of the window we want to use
   remaining<-data #create dummy data set to operate on
