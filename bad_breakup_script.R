@@ -65,14 +65,13 @@ breakup<-function(data, window){ #window is the size of the window we want to us
                      slope=numeric(0), 
                      slope_se=numeric(0), 
                      p_value=numeric(0))
-  numyears<-max(data$year)-min(data$year)+1 #create a variable to count the number of years 
-                                            #represented in the datase
+  numyears<-length(unique(data$year))
   while (numyears>(window-1)){ #while there's still more years of data than in the window
     chunk<-subset(remaining, year<(min(year)+window)) #pull out a chunk as big as the window from the top of the data
     out<-linefit(chunk) #fit a linear model and get relevant statistics on chunk
     output<-rbind(output, out) #append the stats to the output data frame
     remaining<-subset(remaining, year>min(year)) #cut out the first year of the remaining data + repeat
-    numyears<-numyears-1
+    numyears<-length(unique(remaining$year))
   }
   names(output)<-c("year", "length", "years", "slope", "slope_se", "p_value")
   return(output)#output the data frame
