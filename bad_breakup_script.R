@@ -79,7 +79,7 @@ breakup<-function(data, window){ #window is the size of the window we want to us
     remaining<-subset(remaining, year>min(year)) #cut out the first year of the remaining data + repeat
     numyears<-length(unique(remaining$year))
   }
-  names(output)<-c("year", "length", "years", "slope", "slope_se", "p_value")
+  names(output)<-c("start_year", "N_data", "N_years", "slope", "slope_se", "p_value")
   return(output)#output the data frame
 }
 
